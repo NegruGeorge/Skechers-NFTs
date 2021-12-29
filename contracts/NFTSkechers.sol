@@ -11,7 +11,7 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     string public baseURI;
     string public baseExtension = ".json";
-    uint256 public cost = 100 ether;
+    uint256 public cost = 0.05 ether;
 
     uint256 public maxSupply = 10000;
     uint256 public presaleSupply = 2000;
@@ -184,6 +184,7 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
     }
 
     function withdraw() public payable onlyOwner nonReentrant {
-        require(payable(msg.sender).send(address(this).balance));
+        // require(payable(msg.sender).send(address(this).balance));
+        payable(msg.sender).transfer(address(this).balance);
     }
 }
