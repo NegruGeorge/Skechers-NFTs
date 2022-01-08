@@ -7,7 +7,7 @@ import OurStory  from "./components/OurStory.jsx";
 import RoadMap from "./components/RoadMap.jsx";
 import Socials from "./components/Socials.jsx";
 import Team from "./components/Team.jsx";
-import Timer from "./components/Timer.jsx";
+
 function App() {
   return (
     <>

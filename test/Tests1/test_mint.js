@@ -161,6 +161,8 @@ describe("Test mint function", async function () {
     })
     it("should try to mint and not have enaugh money when presale", async () => {
         await nft.whitelistUser(add1.address);
+        await nft.setCost(ethers.utils.parseEther("100"));
+
         await interactionNFTAdd1.mint(add1.address, 5, { value: ethers.utils.parseEther("500") });
         expect(await nft.balanceOf(add1.address)).to.eq(5);
 
@@ -173,6 +175,8 @@ describe("Test mint function", async function () {
     it("should try to mint and not have enaugh money in normal mint", async () => {
         await nft.setPresale(false);
         await nft.whitelistUser(add1.address);
+        await nft.setCost(ethers.utils.parseEther("100"));
+
         await interactionNFTAdd1.mint(add1.address, 5, { value: ethers.utils.parseEther("500") });
         expect(await nft.balanceOf(add1.address)).to.eq(5);
 

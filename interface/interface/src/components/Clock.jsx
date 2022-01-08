@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
 function Clock({ timerDays, timerHours, timerMinutes, timerSeconds }) {
     return <div id="clock">

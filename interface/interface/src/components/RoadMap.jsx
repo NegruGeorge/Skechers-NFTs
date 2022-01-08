@@ -1,5 +1,5 @@
 import React from 'react'
-import modelx from "../images/modeX5.png"
+import modelx from "../images/teslaX.png"
 import roadmapimg from "../images/roadmap.png"
 function RoadMap() {
     return (
@@ -36,7 +36,7 @@ function RoadMap() {
             </div>
             <div className="roadMap-right">
                 
-               <div>
+               <div id="div-bullets">
                <img id="roadmapimg" src={roadmapimg} alt="roadmapimg" />
                </div>
                <div>

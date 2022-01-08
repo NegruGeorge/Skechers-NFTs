@@ -9,17 +9,31 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
     using Strings for uint256;
 
+    // Prefix for tokens metadata URI
     string public baseURI;
+
+    // Sufix for tokens metadata URIs
     string public baseExtension = ".json";
+
+    //Cost of 1 NFT
     uint256 public cost = 0.05 ether;
 
+    //Max Supply of NFTs
     uint256 public maxSupply = 10000;
+
+    //Presale supply of NFTs
     uint256 public presaleSupply = 2000;
 
+    // Maximum number of NFTs that can be minted in 1 transaction
     uint256 public maxMintAmount = 10;
+
+    // Operator that condition mint in presale stage
     bool public presale = true;
+
+    // Operator that set/unset contract to pause
     bool public paused = false;
 
+    // Operator addresses to which the user is approved to mint in presale period
     mapping(address => bool) public whitelisted;
 
     constructor(
@@ -31,43 +45,35 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
         mint(msg.sender, 10);
     }
 
-    // internal
+    /**
+     * Internat baseURI getter.
+     */
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
     }
 
-    // function mint(address _to, uint256 _mintAmount)
-    //     public
-    //     payable
-    //     nonReentrant
-    // {
-    //     uint256 supply = totalSupply();
-    //     require(!paused);
-    //     require(_mintAmount > 0);
-    //     require(_mintAmount <= maxMintAmount);
-    //     require(supply + _mintAmount <= maxSupply);
-
-    //     if (msg.sender != owner()) {
-    //         if (whitelisted[msg.sender] != true) {
-    //             require(msg.value >= cost * _mintAmount);
-    //         }
-    //     }
-
-    //     for (uint256 i = 1; i <= _mintAmount; i++) {
-    //         _safeMint(_to, supply + i);
-    //     }
-    // }
-
+    /**
+     * Access: all accounts.
+     *
+     * @param _to address to allocate the minted token to.
+     * @param _mintAmount the number of NFTs that msg.sender want to mint
+     */
     function mint(address _to, uint256 _mintAmount)
         public
         payable
         nonReentrant
     {
         uint256 supply = totalSupply();
-        require(!paused,"NFTSkechers: contract on pause");
-        require(_mintAmount > 0,"NFTSkechers: mintAmount must be > 0");
-        require(_mintAmount <= maxMintAmount,"NFTSkechers: mintAmount must be <= maxMintAmount");
-        require(supply + _mintAmount <= maxSupply,"NFTSkechers: can't exceed supply");
+        require(!paused, "NFTSkechers: contract on pause");
+        require(_mintAmount > 0, "NFTSkechers: mintAmount must be > 0");
+        require(
+            _mintAmount <= maxMintAmount,
+            "NFTSkechers: mintAmount must be <= maxMintAmount"
+        );
+        require(
+            supply + _mintAmount <= maxSupply,
+            "NFTSkechers: can't exceed supply"
+        );
 
         if (presale == true) {
             if (msg.sender != owner()) {
@@ -82,7 +88,10 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
                 "NFTSkechers: supply must be <= presaleSupply"
             );
             if (msg.sender != owner()) {
-                require(msg.value >= cost * _mintAmount,"NFTSkechers: not enough money to mint");
+                require(
+                    msg.value >= cost * _mintAmount,
+                    "NFTSkechers: not enough money to mint"
+                );
             }
 
             for (uint256 i = 1; i <= _mintAmount; i++) {
@@ -90,7 +99,10 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
             }
         } else {
             if (msg.sender != owner()) {
-                require(msg.value >= cost * _mintAmount,"NFTSkechers: not enough money to normal mint");
+                require(
+                    msg.value >= cost * _mintAmount,
+                    "NFTSkechers: not enough money to normal mint"
+                );
             }
             for (uint256 i = 1; i <= _mintAmount; i++) {
                 _safeMint(_to, supply + i);
@@ -98,6 +110,9 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
+    /**
+     * Returns the complete metadata URI for the given tokenId.
+     */
     function walletOfOwner(address _owner)
         public
         view
@@ -136,18 +151,46 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
                 : "";
     }
 
+    /**
+     * Set the cost of 1 NFT
+     *
+     * Access: only the contract owner account
+     *
+     !* @param _newCost operator set the new cost !in ether
+     */
     function setCost(uint256 _newCost) public onlyOwner {
         cost = _newCost;
     }
 
+    /**
+     * Set the max amount of NFTs that can be minted in 1 transaction
+     *
+     * Access: only the contract owner account
+     *
+     * @param _newmaxMintAmount operator set the contract max amount that can be minted
+     */
     function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
         maxMintAmount = _newmaxMintAmount;
     }
 
+    /**
+     * Changes the base URI for token metadata.
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _newBaseURI new value
+     */
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
 
+    /**
+     * Changes the base extension for token metadata.
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _newBaseExtension new value
+     */
     function setBaseExtension(string memory _newBaseExtension)
         public
         onlyOwner
@@ -155,34 +198,81 @@ contract NFTSkechers is ERC721Enumerable, Ownable, ReentrancyGuard {
         baseExtension = _newBaseExtension;
     }
 
+    /**
+     * Set contract on pause
+     *
+     * Access: only the contract owner account
+     *
+     * @param _state operator set the contract on pause
+     */
     function pause(bool _state) public onlyOwner {
         paused = _state;
     }
 
+    /**
+     * Turn on/off the contract presale
+     *
+     * Access: only the contract owner account
+     *
+     * @param _state operator turn on/off the presale
+     */
     function setPresale(bool _state) public onlyOwner {
         presale = _state;
     }
 
+    /**
+     * Adds an user address to whitelist
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _user address to be whitelisted.
+     */
     function whitelistUser(address _user) public onlyOwner {
         whitelisted[_user] = true;
     }
 
+    /**
+     * Adds an batch of user addresses to whitelist
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _users list of addresses for whitelist
+     */
     function whitelistBatch(address[] memory _users) public onlyOwner {
         for (uint256 i = 0; i < _users.length; i++) {
             whitelisted[_users[i]] = true;
         }
     }
 
+    /**
+     * Removes an operator address from the whitelist.
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _user operator to be removed from the whitelist.
+     */
     function removeWhitelistUser(address _user) public onlyOwner {
         whitelisted[_user] = false;
     }
 
+    /**
+     * Removes an operator address from the whitelist.
+     *
+     * Access: only the contract owner account.
+     *
+     * @param _users operator to be removed from the whitelist.
+     */
     function removeWhitelistBatch(address[] memory _users) public onlyOwner {
         for (uint256 i = 0; i < _users.length; i++) {
             whitelisted[_users[i]] = false;
         }
     }
 
+    /**
+     * Withdraw deposited money on contract
+     *
+     * Access: only the contract owner account.
+     */
     function withdraw() public payable onlyOwner nonReentrant {
         // require(payable(msg.sender).send(address(this).balance));
         payable(msg.sender).transfer(address(this).balance);

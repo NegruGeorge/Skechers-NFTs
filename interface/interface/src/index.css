@@ -292,6 +292,7 @@ position: relative;
 
 .roadMap-right{
   width: 30%;
+  
 }
 
 #roadMap p{
@@ -333,10 +334,16 @@ position: relative;
 
 .roadMap-right img{
   width: 500px;
-  }
+ 
+}
+
+#div-bullets{
+  align-items: center;
+}
 
 .roadMap-right #roadmapimg{
     width: 100px;
+   margin-left: 220px;
 }
 
 
@@ -533,6 +540,31 @@ height: 50px;
 
 }
 
+#socials h3{
+  font-size: 30px;
+  margin-left:60px;
+  text-align: left;
+  color:#60fd44;
+
+}
+
+#sanbox-img{
+  width:30%;
+  height: 30%;
+}
+
+#polygon-img{
+  width: 10%;
+  height: 10%;
+}
+
+#binance-img{
+  width: 20%;
+  height: 20%;
+}
+#sponsors img{
+  margin-left: 30px;
+}
 
 /****************team*********************/
 
@@ -585,6 +617,7 @@ height: 50px;
 
 }
 .s-b-img{
+  margin: auto;
   width: 80%;
   height: 50%;
 
@@ -643,6 +676,11 @@ height: 50px;
 
 }
 
+#box-name{
+  font-weight: bold;
+  font-size: 30px;
+  color: #60fd44;
+}
 
 /****************Subscribe*********************/
 
